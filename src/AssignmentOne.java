@@ -1,9 +1,24 @@
 import java.util.ArrayList;
 
+/**
+ * Main class for the Health Professional System.
+ * Demonstrates object-oriented programming concepts including inheritance,
+ * polymorphism, encapsulation, and collection management.
+ * 
+ * @author Hongke Ouyang
+ * @version 1.0
+ */
 public class AssignmentOne {
-    // ArrayList to store appointments
+    // ArrayList to hold all appointments - using static so all methods can access it
     private static ArrayList<Appointment> appointments = new ArrayList<>();
     
+    /**
+     * Main method - entry point of the program.
+     * Creates health professionals, manages appointments, and demonstrates
+     * the functionality of the system.
+     * 
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         System.out.println("Assignment One - Health Professional System");
 
@@ -52,45 +67,62 @@ public class AssignmentOne {
     }
     
     /**
-     * Creates a new appointment and adds it to the ArrayList.
-     * Uses polymorphism to handle any HealthProfessional subtype (GP, Paediatrician, etc.)
-     * All required information must be supplied, otherwise appointment is not created.
+     * Creates a new appointment and adds it to the collection.
+     * Validates all required information before creating the appointment.
+     * Uses polymorphism - accepts any HealthProfessional type (GP, Paediatrician, etc.)
+     * 
+     * @param patientName the name of the patient
+     * @param patientMobile the mobile phone number of the patient (must be Australian format)
+     * @param timeSlot the preferred time slot for the appointment
+     * @param doctor the health professional for this appointment (can be any type)
+     * @return true if appointment created successfully, false otherwise
      */
-    public static void createAppointment(String patientName, String patientMobile, 
+    public static boolean createAppointment(String patientName, String patientMobile, 
                                         Appointment.TimeSlot timeSlot, HealthProfessional doctor) {
-        // Validate that all required information is supplied
+        // Check if patient name is provided
         if (patientName == null || patientName.trim().isEmpty()) {
             System.out.println("Error: Patient name is required. Appointment not created.");
-            return;
+            return false;
         }
+        // Check if mobile is provided
         if (patientMobile == null || patientMobile.trim().isEmpty()) {
             System.out.println("Error: Patient mobile phone is required. Appointment not created.");
-            return;
+            return false;
         }
+        // Validate Australian mobile format (must start with 04 and have 10 digits total)
+        if (!patientMobile.matches("^04\\d{8}$")) {
+            System.out.println("Error: Invalid mobile format. Please use Australian format (04XXXXXXXX). Appointment not created.");
+            return false;
+        }
+        // Check if time slot is selected
         if (timeSlot == null) {
             System.out.println("Error: Time slot is required. Appointment not created.");
-            return;
+            return false;
         }
+        // Check if doctor is selected
         if (doctor == null) {
             System.out.println("Error: Doctor must be selected. Appointment not created.");
-            return;
+            return false;
         }
         
-        // Create and add the appointment
+        // All checks passed - create and add the appointment
         Appointment newAppointment = new Appointment(patientName, patientMobile, timeSlot, doctor);
         appointments.add(newAppointment);
         System.out.println("Appointment created successfully with ID: " + newAppointment.getAppointmentId());
+        return true;
     }
     
     /**
-     * Displays all existing appointments in the ArrayList.
-     * If there are no existing appointments, prints a message to indicate this.
+     * Prints all existing appointments in the system.
+     * Displays a message if no appointments exist.
+     * Iterates through the ArrayList to display each appointment's details.
      */
     public static void printExistingAppointments() {
         System.out.println("\n========== EXISTING APPOINTMENTS ==========");
         if (appointments.isEmpty()) {
             System.out.println("No existing appointments found.");
         } else {
+            // Loop through all appointments and print each one
             for (int i = 0; i < appointments.size(); i++) {
                 System.out.println("\n[Appointment " + (i + 1) + "]");
                 appointments.get(i).printDetails();
@@ -100,29 +132,38 @@ public class AssignmentOne {
     }
     
     /**
-     * Cancels a booking using a patient's mobile phone.
-     * If the mobile phone is not found in existing appointments, prints an error message.
+     * Cancels an appointment by searching for the patient's mobile number.
+     * Only cancels appointments that are not already cancelled.
+     * 
+     * @param patientMobile the mobile phone number to search for
+     * @return true if an appointment was cancelled, false if not found
      */
-    public static void cancelBooking(String patientMobile) {
+    public static boolean cancelBooking(String patientMobile) {
+        // Make sure mobile number is provided
         if (patientMobile == null || patientMobile.trim().isEmpty()) {
             System.out.println("Error: Mobile phone number is required to cancel booking.");
-            return;
+            return false;
         }
         
         boolean found = false;
+        // Search through all appointments to find matching mobile
         for (int i = 0; i < appointments.size(); i++) {
             Appointment apt = appointments.get(i);
-            // Check if this appointment matches the mobile and is not already cancelled
-            if (apt.getPatientMobile().equals(patientMobile) && apt.getStatus() != Appointment.AppointmentStatus.CANCELLED) {
+            // Check if mobile matches and appointment is not already cancelled
+            if (apt.getPatientMobile() != null && 
+                apt.getPatientMobile().equals(patientMobile) && 
+                apt.getStatus() != Appointment.AppointmentStatus.CANCELLED) {
                 apt.cancelAppointment();
                 System.out.println("Appointment " + apt.getAppointmentId() + " has been cancelled successfully.");
                 found = true;
-                break;
+                break;  // Found it, no need to keep searching
             }
         }
         
         if (!found) {
             System.out.println("Error: No active appointment found with mobile phone: " + patientMobile);
         }
+        
+        return found;
     }
 }
