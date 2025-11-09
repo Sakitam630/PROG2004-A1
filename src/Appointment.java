@@ -98,4 +98,8 @@ public class Appointment {
     public AppointmentStatus getStatus() {
         return status;
     }
+    
+    public String getPatientMobile() {
+        return patientMobile;
+    }
 }
