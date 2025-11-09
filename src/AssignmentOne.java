@@ -25,8 +25,8 @@ public class AssignmentOne {
         // Part 3 – Using classes and objects
         // Create three General Practitioners
         GeneralPractitioner gp1 = new GeneralPractitioner(1, "Dr. John Swift", "General Medicine", "City Health Clinic");
-        GeneralPractitioner gp2 = new GeneralPractitioner(2, "Dr. Sarah", "Family Medicine", "Suburban Medical Center");
-        GeneralPractitioner gp3 = new GeneralPractitioner(3, "Dr. Michael", "General Practice", "Downtown Health Hub");
+        GeneralPractitioner gp2 = new GeneralPractitioner(2, "Dr. Sarah Chen", "Family Medicine", "Suburban Medical Center");
+        GeneralPractitioner gp3 = new GeneralPractitioner(3, "Dr. Michael Thompson", "Behavioral Medicine", "Mental Wellness Clinic");
 
         // Create two Paediatricians
         Paediatrician paed1 = new Paediatrician(4, "Dr. Emily", "Paediatrics", "0-18 years");
